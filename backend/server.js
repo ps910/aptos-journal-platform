@@ -12,11 +12,24 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware - CORS Configuration
 const corsOptions = {
-  origin: [
-    'http://localhost:3000',
-    'https://aptos-journal-platform-g0wpnkfnv-ps910s-projects.vercel.app',
-    /^https:\/\/aptos-journal-platform.*\.vercel\.app$/
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'https://aptos-journal-platform-g0wpnkfnv-ps910s-projects.vercel.app',
+      'https://aptos-journal-platform-dcboayo4g-ps910s-projects.vercel.app',
+      'https://frontend-b2gn0k278-ps910s-projects.vercel.app'
+    ];
+    
+    // Also allow any vercel app URL
+    if (origin.includes('.vercel.app') || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200
 };
