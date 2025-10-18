@@ -46,14 +46,19 @@ app.use((req, res, next) => {
 // MongoDB Connection
 const connectDB = async () => {
   try {
+    if (!process.env.MONGODB_URI) {
+      console.warn('⚠️ MONGODB_URI not set! Using local fallback.');
+    }
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/aptos-journal', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
     });
     console.log('✅ MongoDB Connected');
   } catch (error) {
     console.error('❌ MongoDB Connection Error:', error.message);
-    process.exit(1);
+    console.error('⚠️ Server will start without database connection');
+    // Don't exit - let server start anyway for debugging
   }
 };
 
