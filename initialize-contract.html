@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initialize Aptos Journal Contract</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+        .container {
+            background: #16213e;
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #0f3460;
+        }
+        h1 {
+            color: #00d9ff;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #00d9ff;
+            color: #1a1a2e;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #00b8d4;
+        }
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background: #0f3460;
+        }
+        .success {
+            background: #2d5016;
+            color: #90ee90;
+        }
+        .error {
+            background: #5d1616;
+            color: #ffcccb;
+        }
+        .info {
+            background: #16213e;
+            color: #87ceeb;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #00d9ff;
+        }
+        code {
+            background: #0f3460;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Initialize Aptos Journal Contract</h1>
+        
+        <div class="info">
+            <strong>Module Address:</strong><br>
+            <code id="moduleAddress">0xdf8185c47fe1be6c3bfceb8185da88769cfca09fc308cab61caa0a8b749c42b7</code>
+        </div>
+        
+        <div class="info">
+            <strong>⚠️ Important:</strong><br>
+            1. Make sure Petra Wallet is installed and connected<br>
+            2. You must be connected with the deployer account<br>
+            3. This needs to be run ONLY ONCE<br>
+            4. You need some testnet APT for gas fees
+        </div>
+        
+        <button id="connectBtn" onclick="connectWallet()">Connect Petra Wallet</button>
+        <button id="checkBtn" onclick="checkInitialization()" disabled>Check if Initialized</button>
+        <button id="initBtn" onclick="initializeContract()" disabled>Initialize Contract</button>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        const MODULE_ADDRESS = '0xdf8185c47fe1be6c3bfceb8185da88769cfca09fc308cab61caa0a8b749c42b7';
+        let connected = false;
+        let walletAddress = null;
+
+        async function connectWallet() {
+            const statusDiv = document.getElementById('status');
+            try {
+                if (!window.aptos) {
+                    statusDiv.className = 'status error';
+                    statusDiv.innerHTML = '❌ Petra Wallet not found! Please install it from Chrome Web Store.';
+                    return;
+                }
+
+                statusDiv.className = 'status';
+                statusDiv.innerHTML = '⏳ Connecting to Petra Wallet...';
+
+                const response = await window.aptos.connect();
+                walletAddress = response.address;
+                connected = true;
+
+                document.getElementById('connectBtn').disabled = true;
+                document.getElementById('checkBtn').disabled = false;
+                document.getElementById('initBtn').disabled = false;
+
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = `✅ Connected!<br>Address: <code>${walletAddress}</code>`;
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `❌ Connection failed: ${error.message}`;
+            }
+        }
+
+        async function checkInitialization() {
+            const statusDiv = document.getElementById('status');
+            try {
+                statusDiv.className = 'status';
+                statusDiv.innerHTML = '⏳ Checking initialization status...';
+
+                const response = await fetch('https://fullnode.testnet.aptoslabs.com/v1/accounts/' + MODULE_ADDRESS + '/resource/' + MODULE_ADDRESS + '::journal::JournalPlatform');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = `
+                        ✅ Contract is ALREADY initialized!<br>
+                        Total Journals: <code>${data.data.journal_counter}</code><br>
+                        Platform Balance: <code>${data.data.platform_balance}</code> Octas<br>
+                        <br>
+                        <strong>You can now use the application!</strong>
+                    `;
+                } else if (response.status === 404) {
+                    statusDiv.className = 'status error';
+                    statusDiv.innerHTML = '❌ Contract is NOT initialized yet.<br>Click "Initialize Contract" button below.';
+                } else {
+                    throw new Error('Failed to check initialization');
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `❌ Error checking: ${error.message}`;
+            }
+        }
+
+        async function initializeContract() {
+            const statusDiv = document.getElementById('status');
+            try {
+                if (!connected) {
+                    statusDiv.className = 'status error';
+                    statusDiv.innerHTML = '❌ Please connect your wallet first';
+                    return;
+                }
+
+                statusDiv.className = 'status';
+                statusDiv.innerHTML = '⏳ Initializing contract... Please approve in Petra Wallet...';
+
+                const payload = {
+                    type: 'entry_function_payload',
+                    function: `${MODULE_ADDRESS}::journal::initialize`,
+                    type_arguments: [],
+                    arguments: []
+                };
+
+                const response = await window.aptos.signAndSubmitTransaction(payload);
+                
+                statusDiv.innerHTML = '⏳ Transaction submitted! Waiting for confirmation...<br>Hash: <code>' + response.hash + '</code>';
+
+                // Wait for transaction confirmation
+                await waitForTransaction(response.hash);
+
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = `
+                    ✅ Contract initialized successfully!<br>
+                    Transaction: <code>${response.hash}</code><br>
+                    <br>
+                    <strong>🎉 You can now use the Aptos Journal application!</strong><br>
+                    Go to <a href="http://localhost:3000" target="_blank" style="color: #00d9ff;">http://localhost:3000</a>
+                `;
+
+                // Disable init button
+                document.getElementById('initBtn').disabled = true;
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `❌ Initialization failed: ${error.message}`;
+            }
+        }
+
+        async function waitForTransaction(hash) {
+            const maxWait = 30000; // 30 seconds
+            const interval = 1000; // 1 second
+            let waited = 0;
+
+            while (waited < maxWait) {
+                try {
+                    const response = await fetch(`https://fullnode.testnet.aptoslabs.com/v1/transactions/by_hash/${hash}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success) {
+                            return data;
+                        } else {
+                            throw new Error('Transaction failed');
+                        }
+                    }
+                } catch (error) {
+                    // Continue waiting
+                }
+
+                await new Promise(resolve => setTimeout(resolve, interval));
+                waited += interval;
+            }
+
+            throw new Error('Transaction timeout');
+        }
+    </script>
+</body>
+</html>
