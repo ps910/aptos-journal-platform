@@ -11,14 +11,16 @@ echo.
 echo Please choose an option:
 echo 1. Initialize Git and make first commit
 echo 2. Add GitHub remote and push
-echo 3. Exit
+echo 3. Deploy (reset deployment settings)
+echo 4. Exit
 echo.
 
-set /p choice="Enter your choice (1-3): "
+set /p choice="Enter your choice (1-4): "
 
 if "%choice%"=="1" goto init
 if "%choice%"=="2" goto push
-if "%choice%"=="3" goto end
+if "%choice%"=="3" goto deploy
+if "%choice%"=="4" goto end
 
 echo Invalid choice. Please try again.
 goto menu
@@ -60,7 +62,56 @@ echo.
 pause
 goto menu
 
-:end
+:deploy
+echo.
+echo ================================
+echo  Reset to Local Development
+echo ================================
+echo.
+echo Resetting all deployment settings...
+echo.
+
+REM Remove deployment config files
+if exist "deployment-config.json" del /f /q deployment-config.json
+if exist ".env.production" del /f /q .env.production
+if exist "vercel.json" (
+    echo Resetting Vercel configuration...
+    del /f /q vercel.json
+)
+if exist "netlify.toml" (
+    echo Resetting Netlify configuration...
+    del /f /q netlify.toml
+)
+if exist "render.yaml" (
+    echo Resetting Render configuration...
+    del /f /q render.yaml
+)
+
+echo.
+echo Setting up for local development...
+echo Creating .env.local file...
+
+REM Create default local environment
+(
+echo VITE_API_URL=http://localhost:3001
+echo VITE_APP_NAME=Aptos Journal Platform
+) > frontend\.env.local
+
+(
+echo PORT=3001
+echo NODE_ENV=development
+) > backend\.env.local
+
+echo.
+echo ✅ All deployment settings reset!
+echo ✅ Application configured for local development
+echo.
+echo Next steps:
+echo 1. Frontend: npm install in frontend/ then npm run dev
+echo 2. Backend: npm install in backend/ then npm start
+echo.
+pause
+goto menu
 echo.
 echo Goodbye!
 timeout /t 2 > nul
