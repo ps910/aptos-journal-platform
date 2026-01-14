@@ -71,30 +71,30 @@ const Navbar = () => {
     : '';
 
   return (
-    <nav className="bg-dark-800 border-b border-dark-700 sticky top-0 z-50 backdrop-blur-lg bg-opacity-90">
+    <nav className="bg-white border-b border-dark-200 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/dashboard" className="flex items-center space-x-2">
-            <BookOpen className="w-8 h-8 text-primary-500" />
-            <span className="text-xl font-bold gradient-text">Aptos Journal</span>
+            <BookOpen className="w-8 h-8 text-primary-700" />
+            <span className="text-xl font-semibold text-dark-900">Aptos Journal</span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link to="/dashboard" className="text-dark-300 hover:text-primary-500 px-3 py-2 rounded-md transition">
+            <Link to="/dashboard" className="text-dark-700 hover:text-primary-700 px-3 py-2 rounded-md transition text-sm font-medium">
               Dashboard
             </Link>
-            <Link to="/add-journal" className="text-dark-300 hover:text-primary-500 px-3 py-2 rounded-md transition">
+            <Link to="/add-journal" className="text-dark-700 hover:text-primary-700 px-3 py-2 rounded-md transition text-sm font-medium">
               Add Journal
             </Link>
-            <Link to="/my-journals" className="text-dark-300 hover:text-primary-500 px-3 py-2 rounded-md transition">
+            <Link to="/my-journals" className="text-dark-700 hover:text-primary-700 px-3 py-2 rounded-md transition text-sm font-medium">
               My Journals
             </Link>
-            <Link to="/explore" className="text-dark-300 hover:text-primary-500 px-3 py-2 rounded-md transition">
+            <Link to="/explore" className="text-dark-700 hover:text-primary-700 px-3 py-2 rounded-md transition text-sm font-medium">
               Explore
             </Link>
-            <Link to="/transactions" className="text-dark-300 hover:text-primary-500 px-3 py-2 rounded-md transition">
+            <Link to="/transactions" className="text-dark-700 hover:text-primary-700 px-3 py-2 rounded-md transition text-sm font-medium">
               Transactions
             </Link>
 
@@ -103,26 +103,26 @@ const Navbar = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={disconnectWallet}
-                  className="flex items-center space-x-2 bg-primary-600 hover:bg-primary-700 px-4 py-2 rounded-lg transition"
+                  className="flex items-center space-x-2 bg-primary-700 hover:bg-primary-800 text-white px-4 py-2 rounded-lg transition text-sm font-medium"
                 >
                   <Wallet className="w-4 h-4" />
-                  <span className="text-sm">{shortAddress}</span>
+                  <span>{shortAddress}</span>
                 </button>
               </div>
             ) : (
-              <button onClick={connectWallet} className="btn-primary">
+              <button onClick={connectWallet} className="btn-primary text-sm">
                 <Wallet className="w-4 h-4 inline mr-2" />
                 Connect Wallet
               </button>
             )}
 
             {/* User Menu */}
-            <div className="flex items-center space-x-2 border-l border-dark-700 pl-4">
-              <User className="w-5 h-5 text-dark-400" />
-              <span className="text-sm text-dark-300">{user?.username}</span>
+            <div className="flex items-center space-x-2 border-l border-dark-300 pl-4">
+              <User className="w-5 h-5 text-dark-600" />
+              <span className="text-sm text-dark-700">{user?.username}</span>
               <button
                 onClick={handleLogout}
-                className="text-dark-400 hover:text-red-500 transition"
+                className="text-dark-600 hover:text-red-600 transition"
                 title="Logout"
               >
                 <LogOut className="w-5 h-5" />
@@ -133,7 +133,7 @@ const Navbar = () => {
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-dark-300 hover:text-white"
+            className="md:hidden text-dark-700 hover:text-dark-900"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -142,39 +142,39 @@ const Navbar = () => {
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className="md:hidden bg-dark-800 border-t border-dark-700">
+        <div className="md:hidden bg-dark-50 border-t border-dark-200">
           <div className="px-2 pt-2 pb-3 space-y-1">
             <Link
               to="/dashboard"
-              className="block px-3 py-2 text-dark-300 hover:text-primary-500 rounded-md"
+              className="block px-3 py-2 text-dark-700 hover:text-primary-700 rounded-md text-sm font-medium"
               onClick={() => setIsOpen(false)}
             >
               Dashboard
             </Link>
             <Link
               to="/add-journal"
-              className="block px-3 py-2 text-dark-300 hover:text-primary-500 rounded-md"
+              className="block px-3 py-2 text-dark-700 hover:text-primary-700 rounded-md text-sm font-medium"
               onClick={() => setIsOpen(false)}
             >
               Add Journal
             </Link>
             <Link
               to="/my-journals"
-              className="block px-3 py-2 text-dark-300 hover:text-primary-500 rounded-md"
+              className="block px-3 py-2 text-dark-700 hover:text-primary-700 rounded-md text-sm font-medium"
               onClick={() => setIsOpen(false)}
             >
               My Journals
             </Link>
             <Link
               to="/explore"
-              className="block px-3 py-2 text-dark-300 hover:text-primary-500 rounded-md"
+              className="block px-3 py-2 text-dark-700 hover:text-primary-700 rounded-md text-sm font-medium"
               onClick={() => setIsOpen(false)}
             >
               Explore
             </Link>
             <Link
               to="/transactions"
-              className="block px-3 py-2 text-dark-300 hover:text-primary-500 rounded-md"
+              className="block px-3 py-2 text-dark-700 hover:text-primary-700 rounded-md text-sm font-medium"
               onClick={() => setIsOpen(false)}
             >
               Transactions
@@ -186,7 +186,7 @@ const Navbar = () => {
                   disconnectWallet();
                   setIsOpen(false);
                 }}
-                className="w-full text-left px-3 py-2 text-primary-500"
+                className="w-full text-left px-3 py-2 text-primary-700 text-sm font-medium"
               >
                 Disconnect: {shortAddress}
               </button>
@@ -196,7 +196,7 @@ const Navbar = () => {
                   connectWallet();
                   setIsOpen(false);
                 }}
-                className="w-full text-left px-3 py-2 text-primary-500"
+                className="w-full text-left px-3 py-2 text-primary-700 text-sm font-medium"
               >
                 Connect Wallet
               </button>
@@ -207,7 +207,7 @@ const Navbar = () => {
                 handleLogout();
                 setIsOpen(false);
               }}
-              className="w-full text-left px-3 py-2 text-red-500"
+              className="w-full text-left px-3 py-2 text-red-600 text-sm font-medium"
             >
               Logout
             </button>

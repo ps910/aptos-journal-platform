@@ -41,6 +41,7 @@ console.log('�🚀 Aptos client initialized with config:', {
 
 export const AptosWalletProvider = ({ children }) => {
   const [balance, setBalance] = useState('0');
+  const [walletError, setWalletError] = useState('');
 
   const fetchBalance = async (address) => {
     console.log('=== fetchBalance called ===');
@@ -48,6 +49,7 @@ export const AptosWalletProvider = ({ children }) => {
     
     if (!address) {
       console.error('No address provided');
+      setWalletError('No wallet address provided');
       return;
     }
     
@@ -262,6 +264,7 @@ export const AptosWalletProvider = ({ children }) => {
   const value = {
     aptosClient,
     balance,
+    walletError,
     fetchBalance,
     addJournal,
     readJournal,

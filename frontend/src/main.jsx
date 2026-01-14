@@ -6,10 +6,12 @@ import { BrowserRouter } from 'react-router-dom'
 import { AptosWalletProvider } from './contexts/WalletContext.jsx'
 import { AuthProvider } from './contexts/AuthContext.jsx'
 import { Toaster } from 'react-hot-toast'
+import AnimatedBackground from './components/AnimatedBackground.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
+      <AnimatedBackground />
       <AuthProvider>
         <AptosWalletProvider>
           <App />
@@ -18,9 +20,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             toastOptions={{
               duration: 4000,
               style: {
-                background: '#1e293b',
-                color: '#fff',
-                border: '1px solid #475569',
+                background: '#f5f3f0',
+                color: '#3a3530',
+                border: '1px solid #d5d0c9',
               },
             }}
           />

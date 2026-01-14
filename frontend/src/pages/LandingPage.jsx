@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BookOpen, Wallet, Shield, Zap, TrendingUp, Lock } from 'lucide-react';
+import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 const LandingPage = () => {
+  useScrollAnimation();
+  
   const features = [
     {
       icon: <BookOpen className="w-8 h-8" />,
@@ -40,9 +43,7 @@ const LandingPage = () => {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-900/20 via-transparent to-primary-900/20" />
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -54,14 +55,14 @@ const LandingPage = () => {
               transition={{ duration: 3, repeat: Infinity }}
               className="inline-block mb-6"
             >
-              <BookOpen className="w-20 h-20 text-primary-500 mx-auto" />
+              <BookOpen className="w-20 h-20 text-primary-700 mx-auto" />
             </motion.div>
             
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              <span className="gradient-text">Aptos Journal</span>
+            <h1 className="text-5xl md:text-7xl font-light mb-6 text-dark-900">
+              <span className="gradient-text font-semibold">Aptos Journal</span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-dark-300 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl text-dark-600 mb-8 max-w-3xl mx-auto">
               The first decentralized journal platform on Aptos blockchain.
               Write, earn, and own your stories forever.
             </p>
@@ -76,43 +77,42 @@ const LandingPage = () => {
             </div>
           </motion.div>
         </div>
-
-        {/* Animated Background Elements */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-float" />
-        <div className="absolute bottom-20 right-10 w-72 h-72 bg-primary-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-float" style={{ animationDelay: '1s' }} />
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-dark-900/50">
+      <section className="py-20 bg-white relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            viewport={{ once: true }}
+            className="text-center mb-16 reveal"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Why Choose <span className="gradient-text">Aptos Journal?</span>
+            <h2 className="text-4xl md:text-5xl font-light text-dark-900 mb-4">
+              Why Choose <span className="gradient-text font-semibold">Aptos Journal?</span>
             </h2>
-            <p className="text-xl text-dark-300">
+            <p className="text-xl text-dark-600">
               Experience the future of journaling on blockchain
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-                className="card"
-              >
-                <div className="text-primary-500 mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                <p className="text-dark-300">{feature.description}</p>
-              </motion.div>
+              <div key={index} className="stagger-item">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  whileHover={{ y: -8, boxShadow: '0 15px 40px rgba(168, 152, 132, 0.15)' }}
+                  className="card glow-on-hover h-full"
+                >
+                  <div className="text-primary-700 mb-4">{feature.icon}</div>
+                  <h3 className="text-xl font-semibold mb-2 text-dark-900">{feature.title}</h3>
+                  <p className="text-dark-600">{feature.description}</p>
+                </motion.div>
+              </div>
             ))}
           </div>
         </div>

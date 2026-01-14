@@ -112,6 +112,8 @@ echo 2. Backend: npm install in backend/ then npm start
 echo.
 pause
 goto menu
+
+:end
 echo.
 echo Goodbye!
 timeout /t 2 > nul
